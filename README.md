@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 🚀 To-Do List App
 
 **Manage your tasks effortlessly with this interactive To-Do List app!**  
@@ -28,7 +28,3 @@ Add, edit, delete, and track your tasks in one simple interface.
 - CSS  
 - JavaScript  
 
-
-=======
-# ToDo-List
->>>>>>> b592f6ed79485be807f12bd178c584485c29c2c4
