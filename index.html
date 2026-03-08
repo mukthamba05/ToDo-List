@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY TO DO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle,#ff9a9e,#764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 400px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: black;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 12px;
+            width: 65%;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        #addBtn {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background: #ff7a18;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #addBtn:hover {
+            transform: scale(1.05);
+            background: #ff5722;
+        }
+
+        ul {
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+            background: white;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        li:hover {
+            transform: translateX(5px);
+        }
+
+        .delete {
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+            background: #e8ffe8;
+        }
+
+        .completed::before {
+            content: "✔";
+            color: green;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>My To-Do List</h1>
+
+        <input type="text" id="taskInput" placeholder="Enter a task">
+        <button id="addBtn"><i class="fa-solid fa-plus"></i> Add</button>
+
+        <h3 id="taskCount">Total Tasks: 0</h3>
+
+        <progress id="progressBar" value="0" max="10"></progress>
+
+        <ul id="taskList"></ul>
+
+    </div>
+
+    <script>
+
+        let button = document.getElementById("addBtn");
+        let input = document.getElementById("taskInput");
+        let list = document.getElementById("taskList");
+
+        button.onclick = function () {
+
+            let task = input.value.trim();
+
+            if (task === "") {
+                alert("Please enter a task");
+                return;
+            }
+
+            createTask(task);
+            saveTasks();
+            updateCount();
+            input.value = "";
+            updateProgress();
+        };
+
+        function createTask(task) {
+
+            let li = document.createElement("li");
+            li.textContent = task;
+
+            li.onclick = function () {
+                li.classList.toggle("completed");
+                updateProgress();
+
+            };
+
+        let deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        deleteBtn.className = "delete";
+
+        deleteBtn.onclick = function () {
+            li.remove();
+            saveTasks();
+            updateCount();
+            updateProgress();
+        };
+
+        let editBtn = document.createElement("button");
+        editBtn.innerHTML = "✏️";
+        li.appendChild(editBtn);
+        editBtn.onclick = function () {
+            let newTask = prompt("Edit your task:", li.firstChild.textContent);
+            if (newTask) {
+                li.firstChild.textContent = newTask;
+                saveTasks();
+            }
+        };
+        li.appendChild(editBtn);
+
+        li.appendChild(deleteBtn);
+        list.appendChild(li);
+    }
+        function saveTasks() {
+
+            let tasks = [];
+            document.querySelectorAll("#taskList li").forEach(function (item) {
+                tasks.push(item.firstChild.textContent);
+            });
+
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function updateCount() {
+            let count = document.querySelectorAll("#taskList li").length;
+            document.getElementById("taskCount").textContent = "Total Tasks: " + count;
+        }
+
+        window.onload = function () {
+
+            let savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            savedTasks.forEach(function (task) {
+                createTask(task);
+            });
+
+            updateCount();
+        };
+        function updateProgress() {
+
+            let total = document.querySelectorAll("#taskList li").length;
+            let completed = document.querySelectorAll(".completed").length;
+
+            document.getElementById("progressBar").max = total;
+            document.getElementById("progressBar").value = completed;
+
+        }
+
+        input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                button.click();
+            }
+        });
+
+    </script>
+</body>
+
+</html>
