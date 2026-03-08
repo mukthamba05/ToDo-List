@@ -1,4 +1,3 @@
-
 # 🚀 To-Do List App
 
 **Manage your tasks effortlessly with this interactive To-Do List app!**  
